@@ -48,6 +48,8 @@ const setPlayer = async (file: File) => {
 export const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+        console.log("loading...");
+        loadStatus = [false, ""];
         setPlayer(file).then(() => {
             loadStatus = [true, file.name];
             console.info(`loaded: ${file.name}`);

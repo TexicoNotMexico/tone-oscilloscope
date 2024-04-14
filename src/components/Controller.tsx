@@ -1,27 +1,11 @@
 import { Button, Typography } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { handleFileChange, initializeTone, isInitialized, playPause } from "../controllers/audio";
-
 const Controller = () => {
     return (
         <>
             <Typography variant="h5" fontWeight={"bold"}>
-                鼓膜を
-                <ruby>
-                    嫐<rp>(</rp>
-                    <rt>なぶ</rt>
-                    <rp>)</rp>
-                </ruby>
-                るウェブアプリ
-            </Typography>
-            <Typography variant="body1">鼓膜を嫐るウェブアプリ</Typography>
-            <br />
-            <Typography variant="h5" fontWeight={"bold"}>
-                鼓膜を犯すウェブアプリ
-            </Typography>
-            <Typography variant="body1">
-                スーパーカリフラジリスティック
-                <br />
-                エクスピアリドーシャス
+                操作
             </Typography>
             <Button component="label">
                 読込
@@ -35,30 +19,14 @@ const Controller = () => {
                     hidden
                 />
             </Button>
-            <br />
-            <Typography variant="h5" fontWeight={"bold"}>
-                鼓膜を
-                <ruby>
-                    輪姦
-                    <rp>(</rp>
-                    <rt>まわ</rt>
-                    <rp>)</rp>
-                </ruby>
-                すウェブアプリ
-            </Typography>
-            <Typography variant="body1">
-                タウマタファカタンギハンガコアウ
-                <br />
-                アウオタマテアトゥリプカカピキマウンガホロヌクポカイフェヌアキタナタフ
-            </Typography>
-            <Button
+            <LoadingButton
                 onClick={async () => {
                     if (!isInitialized) await initializeTone();
                     playPause();
                 }}
             >
                 再生
-            </Button>
+            </LoadingButton>
         </>
     );
 };

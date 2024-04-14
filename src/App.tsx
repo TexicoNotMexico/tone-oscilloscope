@@ -17,7 +17,7 @@ const App = () => {
                     </Typography>
                     <Grid container direction="row" spacing={2}>
                         <Grid item xs="auto">
-                            <Paper elevation={24} sx={{ height: "100%" }}>
+                            <Paper elevation={24} sx={{ height: "100%", overflow: "hidden" }}>
                                 <Oscilloscope />
                             </Paper>
                         </Grid>
