@@ -1,4 +1,3 @@
-import { ChangeEvent } from "react";
 import * as Tone from "tone";
 
 export let isInitialized: boolean = false;
@@ -12,7 +11,9 @@ export const initializeTone = async () => {
 };
 
 export let loadStatus: [boolean, string] = [false, ""];
-let player: Tone.Player;
+export let player: Tone.Player;
+
+export let toneAnalyser: Tone.Analyser;
 
 const setPlayer = async (file: File) => {
     const reader = new FileReader();
@@ -33,6 +34,9 @@ const setPlayer = async (file: File) => {
 
         player = new Tone.Player(toneAudioBuffer).toDestination();
 
+        toneAnalyser = new Tone.Analyser({ type: "waveform", size: 1024, channels: 2 });
+        player.connect(toneAnalyser);
+
         reader.onload = null;
         reader.onerror = null;
     } catch (error) {
@@ -41,7 +45,7 @@ const setPlayer = async (file: File) => {
     }
 };
 
-export const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+export const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
         setPlayer(file).then(() => {
