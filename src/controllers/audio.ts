@@ -34,7 +34,7 @@ const setPlayer = async (file: File) => {
 
         player = new Tone.Player(toneAudioBuffer).toDestination();
 
-        toneAnalyser = new Tone.Analyser({ type: "waveform", size: 1024, channels: 2 });
+        toneAnalyser = new Tone.Analyser({ type: "waveform", size: 512, channels: 2 });
         player.connect(toneAnalyser);
 
         reader.onload = null;

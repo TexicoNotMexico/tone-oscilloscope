@@ -1,4 +1,4 @@
-import { Layer, Line, Stage, Text } from "react-konva";
+import { Layer, Shape, Stage } from "react-konva";
 import { loadStatus, toneAnalyser, player } from "../controllers/audio";
 import { useEffect, useState } from "react";
 
@@ -25,11 +25,28 @@ const Oscilloscope = () => {
     return (
         <Stage width={500} height={500}>
             <Layer>
-                <Line
-                    points={waveform.reduce((acc, cur) => acc.concat(cur), []).map((pos) => pos * 250 + 250)}
-                    stroke={"orange"}
-                    strokeWidth={2}
-                    tension={1}
+                <Shape
+                    width={500}
+                    height={500}
+                    sceneFunc={(context, shape) => {
+                        const width = shape.width();
+                        const height = shape.height();
+
+                        context.strokeStyle = "green";
+                        context.beginPath();
+
+                        for (let i = 1; i <= waveform[0].length; i++) {
+                            context.moveTo(
+                                waveform[0][i - 1] * (width / 2) + width / 2,
+                                waveform[1][i - 1] * (height / 2) + height / 2
+                            );
+                            context.lineTo(
+                                waveform[0][i] * (width / 2) + width / 2,
+                                waveform[1][i] * (height / 2) + height / 2
+                            );
+                            context.stroke();
+                        }
+                    }}
                 />
             </Layer>
         </Stage>
