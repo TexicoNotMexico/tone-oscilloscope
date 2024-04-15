@@ -37,7 +37,7 @@ const setPlayer = async (file: File) => {
 
     try {
         if (player) player.dispose();
-        if (transportStopper) Tone.Transport.clear(playStatus[2]);
+        if (transportStopper) Tone.Transport.clear(transportStopper);
 
         const audioData = await onLoad;
         const audioBuffer = await Tone.context.decodeAudioData(audioData);
