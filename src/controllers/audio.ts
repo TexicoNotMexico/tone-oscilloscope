@@ -1,3 +1,4 @@
+import { SyntheticEvent } from "react";
 import * as Tone from "tone";
 
 export let isInitialized: boolean = false;
@@ -68,9 +69,13 @@ export const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
         console.log("loading...");
+
         Tone.Transport.stop();
         playStatus[0] = Tone.Transport.state;
+
         Tone.Transport.seconds = 0;
+        playStatus[1] = Tone.Transport.seconds;
+
         loadStatus = [false, ""];
         setPlayer(file).then(() => {
             loadStatus = [true, file.name];
@@ -83,11 +88,31 @@ export const playPause = () => {
     if (loadStatus[0]) {
         if (Tone.Transport.state !== "started") {
             console.info("start");
-            Tone.Transport.start("+0");
+            Tone.Transport.start();
         } else {
             console.info("pause");
             Tone.Transport.pause();
         }
         playStatus[0] = Tone.Transport.state;
+    }
+};
+
+export const handleSeekbarChange = (_event: Event, value: number | number[]) => {
+    if (loadStatus[0]) {
+        if (Tone.Transport.state === "started") Tone.Transport.pause();
+
+        Tone.Transport.seconds = Array.isArray(value) ? value[0] : value;
+        playStatus[1] = Tone.Transport.seconds;
+    }
+};
+
+export const handleSeekbarChangeCommitted = (_event: SyntheticEvent | Event, value: number | number[]) => {
+    if (loadStatus[0]) {
+        console.info("seeking:", value);
+
+        Tone.Transport.seconds = Array.isArray(value) ? value[0] : value;
+        playStatus[1] = Tone.Transport.seconds;
+
+        playStatus[0] === "started" ? Tone.Transport.start() : Tone.Transport.pause();
     }
 };

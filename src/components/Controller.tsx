@@ -1,6 +1,8 @@
 import { IconButton, Slider, Typography } from "@mui/material";
 import {
     handleFileChange,
+    handleSeekbarChange,
+    handleSeekbarChangeCommitted,
     initializeTone,
     isInitialized,
     loadStatus,
@@ -29,8 +31,8 @@ const Controller = () => {
     const getTimestamp = (seconds: number, duration: number) => {
         const min = Math.floor(seconds / 60);
         const sec = Math.floor(seconds % 60);
-        const remMin = Math.ceil((duration - seconds) / 60);
-        const remSec = Math.ceil((duration - seconds) % 60);
+        const remMin = Math.floor(duration / 60);
+        const remSec = Math.floor(duration % 60);
         return `${min}:${sec.toString().padStart(2, "0")} / ${remMin}:${remSec.toString().padStart(2, "0")}`;
     };
 
@@ -63,7 +65,15 @@ const Controller = () => {
             </IconButton>
             <br />
             <Typography variant="caption">{getTimestamp(playbackState[1], playbackState[2])}</Typography>
-            <Slider value={playbackState[1]} min={0} max={playbackState[2]} />
+            <Slider
+                value={playbackState[1]}
+                min={0}
+                max={playbackState[2]}
+                step={0.1}
+                size="small"
+                onChange={handleSeekbarChange}
+                onChangeCommitted={handleSeekbarChangeCommitted}
+            />
         </>
     );
 };
