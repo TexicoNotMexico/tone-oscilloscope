@@ -8,12 +8,12 @@ import {
     playStatus,
 } from "../controllers/audio";
 import { Pause, PlayArrow, UploadFile } from "@mui/icons-material";
-import * as Tone from "tone";
 import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
+import { PlaybackState } from "tone";
 
 const Controller = () => {
-    const [playbackState, setPlaybackState] = useState<[Tone.PlaybackState, number, number]>(["stopped", 0, 0]);
+    const [playbackState, setPlaybackState] = useState<[PlaybackState, number, number]>(["stopped", 0, 0]);
     const [loadingState, setLoadingState] = useState<[boolean, string]>([true, ""]);
 
     useEffect(() => {
