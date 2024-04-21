@@ -1,4 +1,4 @@
-import { IconButton, Slider, Typography } from "@mui/material";
+import { Grid, IconButton, Slider, Typography } from "@mui/material";
 import {
     handleFileChange,
     handleSeekbarChange,
@@ -9,7 +9,7 @@ import {
     playPause,
     playStatus,
 } from "../controllers/audio";
-import { Pause, PlayArrow, UploadFile } from "@mui/icons-material";
+import { Pause, PlayArrow, UploadFile, VolumeDown } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { PlaybackState } from "tone";
@@ -38,42 +38,66 @@ const Controller = () => {
 
     return (
         <>
-            <Typography variant="h5" fontWeight={"bold"} gutterBottom>
-                操作
+            <Typography variant="h5" fontWeight="bold" gutterBottom>
+                XY オシロスコープ
             </Typography>
-            <LoadingButton component="label" variant="outlined" startIcon={<UploadFile />} loading={!loadingState[0]}>
-                読込
-                <input
-                    type="file"
-                    accept=".wav, .mp3"
-                    onChange={async (e) => {
-                        if (!isInitialized) await initializeTone();
-                        handleFileChange(e);
-                    }}
-                    hidden
-                />
-            </LoadingButton>
-            <br />
-            <IconButton
-                onClick={async () => {
-                    if (!isInitialized) await initializeTone();
-                    playPause();
-                    setPlaybackState([playStatus[0], playStatus[1], playStatus[2]]);
-                }}
-            >
-                {playbackState[0] === "started" ? <Pause /> : <PlayArrow />}
-            </IconButton>
-            <br />
-            <Typography variant="caption">{getTimestamp(playbackState[1], playbackState[2])}</Typography>
-            <Slider
-                value={playbackState[1]}
-                min={0}
-                max={playbackState[2]}
-                step={0.1}
-                size="small"
-                onChange={handleSeekbarChange}
-                onChangeCommitted={handleSeekbarChangeCommitted}
-            />
+            <Grid container spacing={2} alignItems="center">
+                <Grid item>
+                    <LoadingButton
+                        component="label"
+                        variant="outlined"
+                        startIcon={<UploadFile />}
+                        loading={!loadingState[0]}
+                    >
+                        読込
+                        <input
+                            type="file"
+                            accept=".wav, .mp3"
+                            onChange={async (e) => {
+                                if (!isInitialized) await initializeTone();
+                                handleFileChange(e);
+                            }}
+                            hidden
+                        />
+                    </LoadingButton>
+                </Grid>
+
+                <Grid item>
+                    <IconButton
+                        onClick={async () => {
+                            if (!isInitialized) await initializeTone();
+                            playPause();
+                            setPlaybackState([playStatus[0], playStatus[1], playStatus[2]]);
+                        }}
+                    >
+                        {playbackState[0] === "started" ? <Pause /> : <PlayArrow />}
+                    </IconButton>
+                </Grid>
+
+                <Grid item>
+                    <Typography variant="caption">{getTimestamp(playbackState[1], playbackState[2])}</Typography>
+                </Grid>
+
+                <Grid item xs>
+                    <Slider
+                        value={playbackState[1]}
+                        min={0}
+                        max={playbackState[2]}
+                        step={0.1}
+                        size="small"
+                        onChange={handleSeekbarChange}
+                        onChangeCommitted={handleSeekbarChangeCommitted}
+                    />
+                </Grid>
+
+                <Grid item>
+                    <VolumeDown />
+                </Grid>
+
+                <Grid item xs>
+                    <Slider min={0} max={100} step={1} size="small" valueLabelDisplay="auto" onChange={() => {}} />
+                </Grid>
+            </Grid>
         </>
     );
 };
