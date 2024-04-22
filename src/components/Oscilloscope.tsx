@@ -2,7 +2,7 @@ import { Layer, Rect, Shape, Stage } from "react-konva";
 import { loadStatus, toneAnalyser, player } from "../controllers/audio";
 import { useEffect, useState } from "react";
 
-const Oscilloscope = () => {
+const Oscilloscope = (props: { strength: number }) => {
     const [waveform, setWaveform] = useState<number[][]>([[0], [0]]);
     useEffect(() => {
         const updateWaveform = () => {
@@ -25,9 +25,27 @@ const Oscilloscope = () => {
     return (
         <Stage width={500} height={500}>
             <Layer>
-                <Rect x={0} y={0} width={500} height={500} fill={"black"} />
+                <Rect x={0} y={0} width={500} height={500} fill="black" />
             </Layer>
             <Layer>
+                {/*<Line
+                    x={0}
+                    y={0}
+                    points={waveform
+                        .reduce((acc, curr) => acc.concat(curr), [])
+                        .map((item, index) => {
+                            if (index % 2 === 0) {
+                                return item * (500 / 2) + 500 / 2;
+                            } else {
+                                return item * -(500 / 2) + 500 / 2;
+                            }
+                        })}
+                    tension={0.15}
+                    strokeWidth={1}
+                    lineJoin="round"
+                    lineCap="round"
+                    stroke="lime"
+                />*/}
                 <Shape
                     width={500}
                     height={500}
@@ -47,7 +65,7 @@ const Oscilloscope = () => {
 
                             const distance = 1 - Math.hypot(currentX - beforeX, currentY - beforeY) / diagonal;
 
-                            const strength = distance ** 50;
+                            const strength = distance ** (props.strength ?? 50);
 
                             context.beginPath();
 

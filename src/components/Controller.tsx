@@ -1,20 +1,21 @@
-import { Grid, IconButton, Slider, Typography } from "@mui/material";
+import { IconButton, Slider, Stack, Typography } from "@mui/material";
 import {
     handleFileChange,
     handleSeekbarChange,
     handleSeekbarChangeCommitted,
+    handleVolumeChange,
     initializeTone,
     isInitialized,
     loadStatus,
     playPause,
     playStatus,
 } from "../controllers/audio";
-import { Pause, PlayArrow, UploadFile, VolumeDown } from "@mui/icons-material";
+import { Flare, Pause, PlayArrow, UploadFile, VolumeUp } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { PlaybackState } from "tone";
 
-const Controller = () => {
+const Controller = (props: { oscilloCallback: (event: Event, value: number | number[]) => void }) => {
     const [playbackState, setPlaybackState] = useState<[PlaybackState, number, number]>(["stopped", 0, 0]);
     const [loadingState, setLoadingState] = useState<[boolean, string]>([true, ""]);
 
@@ -41,63 +42,69 @@ const Controller = () => {
             <Typography variant="h5" fontWeight="bold" gutterBottom>
                 XY オシロスコープ
             </Typography>
-            <Grid container spacing={2} alignItems="center">
-                <Grid item>
-                    <LoadingButton
-                        component="label"
-                        variant="outlined"
-                        startIcon={<UploadFile />}
-                        loading={!loadingState[0]}
-                    >
-                        読込
-                        <input
-                            type="file"
-                            accept=".wav, .mp3"
-                            onChange={async (e) => {
-                                if (!isInitialized) await initializeTone();
-                                handleFileChange(e);
-                            }}
-                            hidden
-                        />
-                    </LoadingButton>
-                </Grid>
-
-                <Grid item>
-                    <IconButton
-                        onClick={async () => {
+            <Stack spacing={2} direction="column" alignItems="stretch">
+                <LoadingButton
+                    component="label"
+                    variant="outlined"
+                    startIcon={<UploadFile />}
+                    loading={!loadingState[0]}
+                >
+                    読込
+                    <input
+                        type="file"
+                        accept=".wav, .mp3"
+                        onChange={async (e) => {
                             if (!isInitialized) await initializeTone();
-                            playPause();
-                            setPlaybackState([playStatus[0], playStatus[1], playStatus[2]]);
+                            handleFileChange(e);
                         }}
-                    >
-                        {playbackState[0] === "started" ? <Pause /> : <PlayArrow />}
-                    </IconButton>
-                </Grid>
-
-                <Grid item>
-                    <Typography variant="caption">{getTimestamp(playbackState[1], playbackState[2])}</Typography>
-                </Grid>
-
-                <Grid item xs>
-                    <Slider
-                        value={playbackState[1]}
-                        min={0}
-                        max={playbackState[2]}
-                        step={0.1}
-                        size="small"
-                        onChange={handleSeekbarChange}
-                        onChangeCommitted={handleSeekbarChangeCommitted}
+                        hidden
                     />
-                </Grid>
+                </LoadingButton>
+                <IconButton
+                    disabled={loadStatus[1] === "" ? true : false}
+                    onClick={async () => {
+                        if (!isInitialized) await initializeTone();
+                        playPause();
+                        setPlaybackState([playStatus[0], playStatus[1], playStatus[2]]);
+                    }}
+                >
+                    {playbackState[0] === "started" ? <Pause /> : <PlayArrow />}
+                </IconButton>
 
-                <Grid item>
-                    <VolumeDown />
-                </Grid>
+                <Typography variant="body1">{getTimestamp(playbackState[1], playbackState[2])}</Typography>
 
-                <Grid item xs>
-                    <Slider min={0} max={100} step={1} size="small" valueLabelDisplay="auto" onChange={() => {}} />
-                </Grid>
-            </Grid>
+                <Slider
+                    disabled={loadStatus[1] === "" ? true : false}
+                    value={playbackState[1]}
+                    min={0}
+                    max={playbackState[2]}
+                    step={0.1}
+                    onChange={handleSeekbarChange}
+                    onChangeCommitted={handleSeekbarChangeCommitted}
+                />
+                <Stack spacing={2} direction="row">
+                    <VolumeUp />
+                    <Slider
+                        defaultValue={100}
+                        min={0}
+                        max={100}
+                        step={1}
+                        valueLabelDisplay="auto"
+                        onChange={handleVolumeChange}
+                    />
+                </Stack>
+                <Stack spacing={2} direction="row">
+                    <Flare />
+                    <Slider
+                        defaultValue={50}
+                        min={1}
+                        max={70}
+                        step={1}
+                        valueLabelDisplay="auto"
+                        onChange={props.oscilloCallback}
+                    />
+                </Stack>
+            </Stack>
         </>
     );
 };

@@ -116,3 +116,11 @@ export const handleSeekbarChangeCommitted = (_event: SyntheticEvent | Event, val
         playStatus[0] === "started" ? Tone.Transport.start() : Tone.Transport.pause();
     }
 };
+
+export const handleVolumeChange = (_event: Event, value: number | number[]) => {
+    if (loadStatus[0]) {
+        if (player) {
+            player.volume.value = 20 * Math.log10((Array.isArray(value) ? value[0] : value) / 100);
+        }
+    }
+};
